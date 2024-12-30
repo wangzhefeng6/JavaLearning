@@ -75,6 +75,7 @@ public class EmployeeController {
     /**
      * 退出
      * requesrBody是指的json文件的形式
+     * 不需要返回参数所以Result不需要指定泛型
      * @return
      */
     @PostMapping
@@ -85,6 +86,12 @@ public class EmployeeController {
         employeeService.save(employeeDTO);
         return  Result.success();
     }
+    /**
+     * 退出
+     * requesrBody是指的json文件的形式，而这里EmployeePageQueryDTO 是Qyery数据
+     * 不需要返回参数所以Result不需要指定泛型
+     * @return
+     */
     @GetMapping("/page")
     @ApiOperation("分页查询")
     public Result<PageResult> page(EmployeePageQueryDTO employeePageQueryDTO){
@@ -93,5 +100,42 @@ public class EmployeeController {
 
         return Result.success(pageResult);
     }
-
+    /**
+     * 退出
+     {status}路劲参数
+     @PathVariable Integer status这里的形参需要与花括号的内容保持一致，否则需指定@PathVariable({status})
+     *
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    @ApiOperation("启用禁用员工账号")
+    public Result startOrStop(@PathVariable Integer status,Long id){
+        log.info("启用禁用员工账号,{},{}",status,id);
+        employeeService.startOrStop(status,id);
+          return  Result.success();
+    }
+    /**
+     *
+    根据id查询员工信信息
+      * @return
+     */
+    @ApiOperation("根据id查询员工信息")
+    @GetMapping("/{id}")
+    public Result<Employee> getByid(@PathVariable Long id){
+        Employee employee=employeeService.getByid(id);
+        employee.setPassword("*****");
+        return  Result.success(employee);
+    }
+    /**
+     *
+     保存修改的员工信息
+     *
+     * @return
+     */
+    @PutMapping
+    @ApiOperation("保存修改的员工信息")
+    public Result update(@RequestBody EmployeeDTO employeeDTO){
+        employeeService.update(employeeDTO);
+        return Result.success();
+    }
 }
